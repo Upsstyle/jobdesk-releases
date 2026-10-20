@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Job desk reads the job boards every morning, drafts the CV and the letter, and never sends anything. For macOS, on your Claude subscription.">
+<title>Job desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0}img{max-width:100%}
+/* Layout: one centred column; sections alternate copy and a product screenshot, the hero puts the whole desk on show. Same look as the app: dark, one blue, Inter. */
+:root{--bg:#121212;--bg-2:#181818;--bg-3:#0f0f0f;--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.16);--text:#fefefe;--text-2:#d9d9d9;--muted:rgba(202,202,202,.68);--accent:#0071fc;--accent-text:#7db4ff;--accent-soft:rgba(0,113,252,.16);--ok:#3ddc84;--glow:rgba(0,113,252,.22);--shadow:rgba(0,0,0,.55);--show-d:block;--show-l:none;--font:"Inter",-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;--display:"Inter Tight","Inter",-apple-system,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f4f6;--bg-2:#ffffff;--bg-3:#ebebee;--line:rgba(0,0,0,.08);--line-2:rgba(0,0,0,.15);--text:#111114;--text-2:#2a2a2f;--muted:rgba(60,60,70,.7);--accent:#0071fc;--accent-text:#0060d8;--accent-soft:rgba(0,113,252,.12);--ok:#1f9d55;--glow:rgba(0,113,252,.14);--shadow:rgba(0,0,0,.16);--show-d:none;--show-l:block;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f4f4f6;--bg-2:#ffffff;--bg-3:#ebebee;--line:rgba(0,0,0,.08);--line-2:rgba(0,0,0,.15);--text:#111114;--text-2:#2a2a2f;--muted:rgba(60,60,70,.7);--accent:#0071fc;--accent-text:#0060d8;--accent-soft:rgba(0,113,252,.12);--ok:#1f9d55;--glow:rgba(0,113,252,.14);--shadow:rgba(0,0,0,.16);--show-d:none;--show-l:block;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--accent-text);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;text-wrap:balance;margin:0}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:17px;color:var(--text)}
+.brand i{width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px;box-shadow:0 4px 14px var(--glow)}
+.top nav{display:flex;gap:18px;font-size:14px;color:var(--muted)}.top nav a{color:inherit}
+.top nav a:hover{color:var(--text);text-decoration:none}
+@media (max-width:640px){.top nav{display:none}}
+/* hero */
+.hero{padding-block:56px 24px;text-align:center}
+.hero h1{font-size:clamp(38px,6.4vw,72px);font-weight:700;line-height:1.02;max-width:14ch;margin:14px auto 0}
+.hero .lead{max-width:62ch;margin:22px auto 0;font-size:clamp(16px,1.6vw,19px);color:var(--text-2)}
+.cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:50px;font-weight:500;font-size:15px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--text);transition:transform .2s cubic-bezier(.22,1.2,.36,1),box-shadow .2s}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn.accent{background:var(--accent);color:#fff;border-color:transparent;box-shadow:0 6px 20px var(--glow)}
+.hero .fine{margin-top:14px;font-size:13px;color:var(--muted)}
+/* screenshots */
+.shot{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line-2);background:var(--bg-3);box-shadow:0 30px 80px var(--shadow)}
+.shot img{display:block;width:100%;height:auto;max-width:100%}
+.shot img.d{display:var(--show-d)}.shot img.l{display:var(--show-l)}
+.hero .shot{margin:44px auto 0;max-width:1120px}
+.hero .shot::before{content:"";position:absolute;inset:-40% -20% auto;height:60%;background:radial-gradient(closest-side,var(--glow),transparent 70%);pointer-events:none}
+/* feature sections */
+.feat{display:grid;grid-template-columns:5fr 7fr;gap:40px;align-items:center;padding-block:72px;border-top:1px solid var(--line)}
+.feat.flip .copy{order:2}
+.feat h2{font-size:clamp(26px,3.4vw,38px);font-weight:600;line-height:1.1;margin-top:10px}
+.feat .copy p{color:var(--text-2);margin-top:14px;max-width:48ch}
+.feat ul{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:10px;color:var(--text-2)}
+.feat li{display:flex;gap:10px;align-items:flex-start}
+.feat li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:9px}
+.feat li b{color:var(--text);font-weight:500}
+.feat .copy{min-width:0}.feat .shot{min-width:0}
+@media (max-width:860px){.feat{grid-template-columns:1fr;gap:24px;padding-block:52px}.feat.flip .copy{order:0}}
+/* principles */
+.rules{padding-block:64px;border-top:1px solid var(--line)}
+.rules h2{font-size:clamp(26px,3.4vw,38px);font-weight:600;max-width:20ch}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+@media (max-width:960px){.grid{grid-template-columns:repeat(2,1fr)}}@media (max-width:520px){.grid{grid-template-columns:1fr}}
+.tile{background:var(--bg-2);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}
+.tile b{display:block;font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:-.01em}
+.tile p{color:var(--muted);font-size:14px;margin-top:6px}
+/* install */
+.install{padding-block:64px 80px;border-top:1px solid var(--line)}
+.install h2{font-size:clamp(26px,3.4vw,38px);font-weight:600}
+.install p{color:var(--text-2);margin-top:12px;max-width:60ch}
+.cmd{display:flex;align-items:center;gap:10px;margin-top:20px;background:var(--bg-3);border:1px solid var(--line-2);border-radius:14px;padding:12px 12px 12px 16px;max-width:760px;min-width:0}
+.cmd code{flex:1;min-width:0;font-family:var(--mono);font-size:13px;color:var(--text);white-space:nowrap;overflow-x:auto}
+.cmd button{flex:none;font:inherit;font-size:13px;font-weight:500;padding:8px 14px;border-radius:50px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+.cmd button:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
+.steps{margin:18px 0 0;padding-left:20px;color:var(--text-2);display:grid;gap:6px;max-width:60ch}
+.foot{border-top:1px solid var(--line);padding-block:24px 36px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+
+</head><body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top"><i>J</i>Job desk</a>
+    <nav><a href="#scout">Scout</a><a href="#workshop">Workshop</a><a href="#pipeline">Pipeline</a><a href="#ask">Ask</a><a href="#install">Install</a></nav>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="eyebrow">For macOS · runs on your Claude subscription</div>
+    <h1>Your job search, run every morning.</h1>
+    <p class="lead">Job desk reads the job boards for you, scores what it finds against what you want, drafts the CV and the letter, and tells you when a company has gone quiet. It never sends anything. You do.</p>
+    <div class="cta"><a class="btn accent" href="https://github.com/Upsstyle/jobdesk-releases/releases/latest">Download for Mac</a><a class="btn" href="#install">Or paste one line in Terminal</a></div>
+    <p class="fine">Your notes stay on your Mac, as plain files. Nothing is posted, sent or submitted by the app.</p>
+    <div class="shot"><img class="d" src="img/overview-dark.png" alt="The Overview: today's list in order, the week's numbers, what needs you, and the morning's matches" width="2560" height="1600"><img class="l" src="img/overview-light.png" alt="The Overview in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="feat" id="scout">
+    <div class="copy">
+      <div class="eyebrow">Every morning at 08:30</div>
+      <h2>The scout reads the boards so you don't.</h2>
+      <p>It searches against the roles, places and terms you set, scores each posting from 0 to 10 and says why it fits, what the risk is and the one thing to check. You decide with three buttons.</p>
+      <ul><li><b>Tailor it</b> drafts the brief, CV and letter in about five minutes.</li><li><b>Later</b> keeps the company on the watchlist.</li><li><b>Not for me</b> means it is never shown again.</li></ul>
+    </div>
+    <div class="shot"><img class="d" src="img/scout-dark.png" alt="The Scout view: each match with its score, why it fits, and the three choices" width="2560" height="1600"><img class="l" src="img/scout-light.png" alt="The Scout view in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="feat flip" id="workshop">
+    <div class="copy">
+      <div class="eyebrow">The workshop</div>
+      <h2>Retouch the CV and the letter in place.</h2>
+      <p>The package opens as text. Click a passage, say "shorter" or "less about management", and it is rewritten where it stands. Double-click to change a word yourself.</p>
+      <ul><li><b>Every version is kept.</b> Undo any change, compare with what the tailor wrote.</li><li><b>The PDF follows.</b> Rendered again after each change, filed where the application expects it.</li><li><b>It learns.</b> Send a change with "Every time" and it becomes a rule the next tailor follows.</li></ul>
+    </div>
+    <div class="shot"><img class="d" src="img/workshop-dark.png" alt="The Workshop: the cover letter on the left with a passage selected, the conversation that edits it on the right" width="2560" height="1600"><img class="l" src="img/workshop-light.png" alt="The Workshop in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="feat" id="pipeline">
+    <div class="copy">
+      <div class="eyebrow">The pipeline</div>
+      <h2>It moves on its own.</h2>
+      <p>Press "sent" and a follow-up lands on the calendar fourteen days out. When a company stays silent, it comes back to the top of your morning with a message drafted in your voice. When a reply arrives, the card moves to In conversation.</p>
+    </div>
+    <div class="shot"><img class="d" src="img/kanban-dark.png" alt="The Kanban: Draft, Applied, Follow up, In conversation, Closed" width="2560" height="1600"><img class="l" src="img/kanban-light.png" alt="The Kanban in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="feat flip" id="interviews">
+    <div class="copy">
+      <div class="eyebrow">Before the interview</div>
+      <h2>Walk in with three ideas and the honest gap.</h2>
+      <p>One click researches the company and writes a briefing and a "What I'd bring" proposal: three concrete suggestions tied to your own evidence, plus the thing you lack, said plainly, so it never surprises you in the room.</p>
+    </div>
+    <div class="shot"><img class="d" src="img/interviews-dark.png" alt="The Interviews view: proposals and the honest gap per company" width="2560" height="1600"><img class="l" src="img/interviews-light.png" alt="The Interviews view in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="feat" id="ask">
+    <div class="copy">
+      <div class="eyebrow">Ask</div>
+      <h2>Ask anything about your search.</h2>
+      <p>"Which match is closest to the Beta role?" "What did I promise Acme?" "What is due this week?" The answer comes from your own notes, read before it replies, and the conversation is saved beside them.</p>
+    </div>
+    <div class="shot"><img class="d" src="img/ask-dark.png" alt="The Ask drawer open beside the Agents view" width="2560" height="1600"><img class="l" src="img/ask-light.png" alt="The Ask drawer in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="feat flip" id="agents">
+    <div class="copy">
+      <div class="eyebrow">The agents</div>
+      <h2>Eight agents, one schedule.</h2>
+      <p>Scout, tailor, follow-up, interview prep, outreach, case study, the Monday review and the calendar desk. Each one drafts, nothing more. Run any of them now, or let the week's rhythm run them for you while the app sits in the menu bar.</p>
+    </div>
+    <div class="shot"><img class="d" src="img/agents-dark.png" alt="The Agents view: one card per agent, the schedule, the run log" width="2560" height="1600"><img class="l" src="img/agents-light.png" alt="The Agents view in the light theme" width="2560" height="1600"></div>
+  </section>
+
+  <section class="rules">
+    <div class="eyebrow">Rules that never change</div>
+    <h2>Built for someone who is anxious enough already.</h2>
+    <div class="grid">
+      <div class="tile"><b>Nothing is sent</b><p>Every output is a draft. You read it, you send it, you mark it sent.</p></div>
+      <div class="tile"><b>Your files, in a folder</b><p>Plain Markdown on your Mac. Open them in Obsidian or any editor; keep them when you stop.</p></div>
+      <div class="tile"><b>Your own subscription</b><p>Runs through Claude Code on your Claude plan. No new account, no key to paste.</p></div>
+      <div class="tile"><b>Honest by default</b><p>Silence is named as silence. A gap is written as a gap. No invented experience, ever.</p></div>
+    </div>
+  </section>
+
+  <section class="install" id="install">
+    <div class="eyebrow">Install</div>
+    <h2>One line in Terminal.</h2>
+    <p>You need a Mac and a Claude Pro or Max subscription. Open Terminal, paste this line and press Return.</p>
+    <div class="cmd"><code id="line">curl -fsSL https://raw.githubusercontent.com/Upsstyle/jobdesk-releases/main/install.sh | bash</code><button type="button" id="copy">Copy</button></div>
+    <ol class="steps">
+      <li>It installs Job desk, Node.js (for the PDFs) and Claude Code, then opens your browser to connect your Claude account.</li>
+      <li>Job desk opens a welcome screen: your CV, where you want to work, what you look for.</li>
+      <li>Tomorrow at 08:30 the first matches are waiting. New versions arrive as a banner in the app, one click to update.</li>
+    </ol>
+  </section>
+
+  <footer class="foot"><span>Job desk · <a href="https://github.com/Upsstyle/jobdesk-releases/releases">all releases</a></span><span>Dark or light, your choice, in the app and here.</span></footer>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('copy'),c=document.getElementById('line');
+  b.addEventListener('click',function(){
+    var t=c.textContent;
+    function fallback(){var r=document.createRange();r.selectNodeContents(c);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Select and copy';}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy';},1800);},fallback);}else fallback();
+  });
+})();
+</script>
+
+</head><body>
+
+</body></html>
