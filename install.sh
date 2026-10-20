@@ -1,7 +1,7 @@
 #!/bin/bash
 # Job desk installer for macOS.
 #
-#   curl -fsSL https://raw.githubusercontent.com/Upsstyle/jobdesk/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Upsstyle/jobdesk-releases/main/install.sh | bash
 #
 # Installs, without admin rights where possible:
 #   1. Job desk.app (latest release of Upsstyle/jobdesk-releases) into /Applications, or ~/Applications
